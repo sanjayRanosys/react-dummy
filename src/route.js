@@ -25,6 +25,7 @@ const AppRoute = () => (
       <div className="mainContent">
       <Route exact path="/" component={Tgrid}/>
       <Route path="/add" component={NameForm}/>
+      <Route path="/edit/:id" component={NameForm}/>
       <Route path="/about" component={AboutMe}/>
     	</div>
     </div>

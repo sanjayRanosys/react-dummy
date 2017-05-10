@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
 import DataService from './dataService';
+import Constant from './constant';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { Grid, Row, Col } from 'react-bootstrap';
 import './header.css';
 import './react-bootstrap-table.css';
 import 'bootstrap/dist/css/bootstrap.css';// Put any other imports below so that CSS from your
 import 'bootstrap/dist/css/bootstrap-theme.css';
+import {
+  BrowserRouter as Router,
+  Route,
+  Link
+} from 'react-router-dom';
 //import products from './products'
-
-const url = 'https://accedo-video-app-api.herokuapp.com/getProducts';
 
 class Tgrid extends Component {
     constructor(props) {
@@ -19,7 +23,7 @@ class Tgrid extends Component {
 
     componentDidMount() {
         const _this = this;
-        DataService.fetchData(url ,function (res) {
+        DataService.fetchData(Constant.getProductsUrl ,function (res) {
             res.then(function(json) {
                 //console.log('Json', json)
                 _this.setState({
@@ -37,31 +41,15 @@ class Tgrid extends Component {
         return new Date(date.toString()).toLocaleTimeString();
     }
 
+    cellButton(cell, row, enumObject, rowIndex) {
+        console.log('cell',row._id)
+        return (
+           <Link to={ "/edit/" + row._id }>Edit</Link>
+        )
+     }
+
     render() {
     	return(
-    		/*<div>
-    			<Grid>
-                    <Row className="show-grid">
-                      <Col xs={12} md={8}><code>&lt;{'Col xs={12} md={8}'} /&gt;</code></Col>
-                      <Col xs={6} md={4}><code>&lt;{'Col xs={6} md={4}'} /&gt;</code></Col>
-                    </Row>
-
-                    <Row className="show-grid">
-                      <Col xs={6} md={4}><code>&lt;{'Col xs={6} md={4}'} /&gt;</code></Col>
-                      <Col xs={6} md={4}><code>&lt;{'Col xs={6} md={4}'} /&gt;</code></Col>
-                      <Col xsHidden md={4}><code>&lt;{'Col xsHidden md={4}'} /&gt;</code></Col>
-                    </Row>
-
-                    <Row className="show-grid">
-                      <Col xs={6} xsOffset={6}><code>&lt;{'Col xs={6} xsOffset={6}'} /&gt;</code></Col>
-                    </Row>
-
-                    <Row className="show-grid">
-                      <Col md={6} mdPush={6}><code>&lt;{'Col md={6} mdPush={6}'} /&gt;</code></Col>
-                      <Col md={6} mdPull={6}><code>&lt;{'Col md={6} mdPull={6}'} /&gt;</code></Col>
-                    </Row>
-                  </Grid>
-    		</div>*/
             <div>
                 <label> { this.state.title } </label>
                 <BootstrapTable data={this.state.products} striped={true} hover={true}>
@@ -70,6 +58,7 @@ class Tgrid extends Component {
                     <TableHeaderColumn dataField="desc" dataSort={true}>Product Name</TableHeaderColumn>
                     <TableHeaderColumn dataField="price" dataFormat={this.priceFormatter}>Product Price</TableHeaderColumn>
                     <TableHeaderColumn dataField="created_date" dataFormat={this.dateFormatter}>Product Price</TableHeaderColumn>
+                    <TableHeaderColumn dataField='button' dataFormat={this.cellButton.bind(this)}/>
                 </BootstrapTable>
             </div>
     	);

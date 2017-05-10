@@ -1,10 +1,9 @@
 import React from 'react';
 import DataService from './dataService';
+import Constant from './constant';
 import { Form, FormGroup, ControlLabel, FormControl, HelpBlock, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';// Put any other imports below so that CSS from your
 import 'bootstrap/dist/css/bootstrap-theme.css';
-
-const url = "https://accedo-video-app-api.herokuapp.com/addProduct";
 
 function FieldGroup({ id, label, help, ...props }) {
   return (
@@ -18,11 +17,29 @@ function FieldGroup({ id, label, help, ...props }) {
 
 class NameForm extends React.Component {
 	constructor(props) {
+		//console.log('props',props.match.params.id)
 		super(props);
 		this.state = {productName: '', price: '20', desc: ''};
 
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
+	}
+
+	componentDidMount() {
+		if (this.props.match.params && this.props.match.params.id) {
+			const _this = this;
+	        DataService.fetchData(Constant.getProductUrl +'/'+_this.props.match.params.id ,function (res) {
+	            res.then(function(json) {
+	                //console.log('Json', json)
+	                _this.setState({
+	                	id: json[0]._id,
+	                    productName: json[0].name, 
+	                    price: json[0].price, 
+	                    desc: json[0].desc
+	                })
+	            })
+	        });
+		}
 	}
 
 	handleChange(event) {
@@ -36,21 +53,24 @@ class NameForm extends React.Component {
 	}
 
 	handleSubmit(event) {
-		alert('Name submitted : '+ this.state.productName + ' Description ' + this.state.desc + ' and Drop Down is ' + this.state.price);
-		const data = {
+		//alert('Name submitted : '+ this.state.productName + ' Description ' + this.state.desc + ' and Drop Down is ' + this.state.price);
+		var url = Constant.saveProductUrl;
+		var data = {
 			'name': this.state.productName,
 			'desc': this.state.desc,
 			'price': this.state.price
 		};
 
+		if (this.props.match.params && this.props.match.params.id) {
+			data.id = this.props.match.params.id
+			url = Constant.updateProductUrl;
+		}
+
 		DataService.saveData(url, data ,function (res) {
             res
             .then(function(json) {
                 console.log('Json', json)
-                /*_this.setState({
-                    products: json
-                })*/
-                alert('Data saved successfully');
+                alert('Data saved/updated successfully');
             })
             .then(function(err) {
             	console.log('err',err);
@@ -95,7 +115,7 @@ class NameForm extends React.Component {
 				
 				<FormGroup>
 					<Button type="submit">
-				      Submit
+				      {this.props.match.params.id ? 'Edit' : 'Add'}
 				    </Button>
 			    </FormGroup>
 			</Form>
