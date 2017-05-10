@@ -17,7 +17,7 @@ const AppRoute = () => (
       <div className="routeNav">
       <ul>
         <li><Link to="/">Home</Link></li>
-        <li><Link to="/add">Add User</Link></li>
+        <li><Link to="/add">Add Products</Link></li>
         <li><Link to="/about">About Me</Link></li>
       </ul>
       </div>

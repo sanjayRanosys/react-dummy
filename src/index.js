@@ -48,10 +48,11 @@ const user = {
 };
 
 //example for create element by react createElement function
+const footerStyle = { textAlign: 'center' };
 const element = (
-	<footer>
-		Hello, {formatName(user)}!
-		<img className="App-logo" src={logo}></img>
+	<footer style={footerStyle}>
+		<img className="App-logo fullWidth" src={logo}></img>
+		<span className="fullWidth">Hello, {formatName(user)}!</span>
 	</footer>
 );
 

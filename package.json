@@ -6,9 +6,10 @@
     "bootstrap": "^3.3.7",
     "react": "^15.5.4",
     "react-bootstrap": "^0.31.0",
+    "react-bootstrap-table": "",
     "react-dom": "^15.5.4",
     "react-router": "2.8.x",
-    "react-bootstrap-table": ""
+    "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
     "react-scripts": "0.9.5"

@@ -1,55 +1,43 @@
 import React, { Component } from 'react';
+import DataService from './dataService';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { Grid, Row, Col } from 'react-bootstrap';
 import './header.css';
 import './react-bootstrap-table.css';
 import 'bootstrap/dist/css/bootstrap.css';// Put any other imports below so that CSS from your
 import 'bootstrap/dist/css/bootstrap-theme.css';
-import products from './products'
+//import products from './products'
 
-/*const products = [{
-      id: 1,
-      name: "Item name 1",
-      price: 100
-  },{
-      id: 2,
-      name: "Item name 2",
-      price: 100
-  }];*/
+const url = 'https://accedo-video-app-api.herokuapp.com/getProducts';
 
 class Tgrid extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            data: [{
-                    "id": 1,
-                    "name": "Foo",
-                    "age": "20"
-                },
-
-                {
-                    "id": 2,
-                    "name": "Bar",
-                    "age": "30"
-                },
-
-                {
-                    "id": 3,
-                    "name": "Baz",
-                    "age": "40"
-                }
-            ]
-        };
-
+        this.state = { title: "Product Data", products: [] };
         this.priceFormatter = this.priceFormatter.bind(this);
+    }
+
+    componentDidMount() {
+        const _this = this;
+        DataService.fetchData(url ,function (res) {
+            res.then(function(json) {
+                //console.log('Json', json)
+                _this.setState({
+                    products: json
+                })
+            })
+        });
     }
 
     priceFormatter(cell, row){
       return '<i class="glyphicon glyphicon-usd"></i> ' + cell;
     }
 
-    render() {
+    dateFormatter(date) {
+        return new Date(date.toString()).toLocaleTimeString();
+    }
 
+    render() {
     	return(
     		/*<div>
     			<Grid>
@@ -74,12 +62,16 @@ class Tgrid extends Component {
                     </Row>
                   </Grid>
     		</div>*/
-
-            <BootstrapTable data={products} striped={true} hover={true}>
-                  <TableHeaderColumn dataField="id" isKey={true} dataAlign="center" dataSort={true}>Product ID</TableHeaderColumn>
-                  <TableHeaderColumn dataField="name" dataSort={true}>Product Name</TableHeaderColumn>
-                  <TableHeaderColumn dataField="price" dataFormat={this.priceFormatter}>Product Price</TableHeaderColumn>
-              </BootstrapTable>
+            <div>
+                <label> { this.state.title } </label>
+                <BootstrapTable data={this.state.products} striped={true} hover={true}>
+                    <TableHeaderColumn dataField="_id" isKey={true} dataAlign="center" dataSort={true}>Product ID</TableHeaderColumn>
+                    <TableHeaderColumn dataField="name" dataSort={true}>Product Name</TableHeaderColumn>
+                    <TableHeaderColumn dataField="desc" dataSort={true}>Product Name</TableHeaderColumn>
+                    <TableHeaderColumn dataField="price" dataFormat={this.priceFormatter}>Product Price</TableHeaderColumn>
+                    <TableHeaderColumn dataField="created_date" dataFormat={this.dateFormatter}>Product Price</TableHeaderColumn>
+                </BootstrapTable>
+            </div>
     	);
     }
 }

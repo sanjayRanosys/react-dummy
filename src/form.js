@@ -1,7 +1,10 @@
 import React from 'react';
+import DataService from './dataService';
 import { Form, FormGroup, ControlLabel, FormControl, HelpBlock, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';// Put any other imports below so that CSS from your
 import 'bootstrap/dist/css/bootstrap-theme.css';
+
+const url = "https://accedo-video-app-api.herokuapp.com/addProduct";
 
 function FieldGroup({ id, label, help, ...props }) {
   return (
@@ -16,7 +19,7 @@ function FieldGroup({ id, label, help, ...props }) {
 class NameForm extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {userName: '', selectDD: '20'};
+		this.state = {productName: '', price: '20', desc: ''};
 
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -29,11 +32,30 @@ class NameForm extends React.Component {
 			[name]: val 
 		});
 
-		console.log(this.state)
+		//console.log(this.state)
 	}
 
 	handleSubmit(event) {
-		alert('Name submitted : '+ this.state.userName + ' and Drop Down is ' + this.state.selectDD);
+		alert('Name submitted : '+ this.state.productName + ' Description ' + this.state.desc + ' and Drop Down is ' + this.state.price);
+		const data = {
+			'name': this.state.productName,
+			'desc': this.state.desc,
+			'price': this.state.price
+		};
+
+		DataService.saveData(url, data ,function (res) {
+            res
+            .then(function(json) {
+                console.log('Json', json)
+                /*_this.setState({
+                    products: json
+                })*/
+                alert('Data saved successfully');
+            })
+            .then(function(err) {
+            	console.log('err',err);
+            });
+        });
 		event.preventDefault();
 	}
 
@@ -45,14 +67,19 @@ class NameForm extends React.Component {
 			      type="text"
 			      label="Product Name"
 			      placeholder="Enter Name"
-			      name="userName"
-			      value={this.state.userName} 
+			      name="productName"
+			      value={this.state.productName} 
 			      onChange={this.handleChange}
 			    />
 
+			    <FormGroup controlId="formControlsTextarea">
+			      <ControlLabel>Product Description</ControlLabel>
+			      <FormControl componentClass="textarea" placeholder="Description here.." name="desc" value={this.state.desc} onChange={this.handleChange} />
+			    </FormGroup>
+
 			    <FormGroup controlId="formControlsSelect">
 			      <ControlLabel>Product Price</ControlLabel>
-			      <FormControl componentClass="select" placeholder="Select Price" name="selectDD" value={this.state.selectDD} onChange={this.handleChange}>
+			      <FormControl componentClass="select" placeholder="Select Price" name="price" value={this.state.price} onChange={this.handleChange}>
 			        <option value="10">$10</option>
 		            <option value="20">$20</option>
 		            <option value="30">$30</option>
