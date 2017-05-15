@@ -30,6 +30,21 @@ class DataService {
 		})
         return 'Post Data';
     }
+
+    static deleteData(url, data, next) {
+        fetch(url, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        })
+        .then(function(response) {
+            console.log('post data', response);
+            next(response.json())
+        })
+        return 'Post Data';
+    }
 }
 
 export default DataService;
