@@ -7,14 +7,13 @@ class ValidationExampleForm extends React.Component {
 		super(props);
 
 		this.state = {
-			userName: '',
-			formValid: false,
-			validationRule: {
-				require: true,
-				min: true,
-				max: true
-			}
+			productName: '',
+			productDesription: '',
+			email: '',
+			formValid: false
 		};
+
+		this.changeEventHandler = this.changeEventHandler.bind(this);
 	}
 
 	componentDidMount() {
@@ -26,14 +25,35 @@ class ValidationExampleForm extends React.Component {
 			key: value,
 			formValid: validState
 		});
+		console.log('=>', key, value, validState)
 	}
 
 	render() {
+		const firstFieldRule = { require: true, min:2, max:6, pattern:/^[a-zA-Z\s]+$/ },
+			emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 		return (
 			<div>
 				<Form horizontal>
-					<ValidInput validationRule={this.state.validationRule} />
-					<ValidInputText validationRule={this.state.validationRule} />
+					<ValidInput validationRule={ firstFieldRule } 
+						stateKey="productName" 
+						labelText="Product Name" 
+						inputType="text"
+						placeholder="Product Name"
+						onChange={this.changeEventHandler} />
+					<ValidInput 
+						validationRule={ { require: true } } 
+						stateKey="productDesription" 
+						labelText="Product Description" 
+						inputType="textarea"
+						placeholder="Product Description"
+						onChange={this.changeEventHandler} />
+					<ValidInput 
+						validationRule={ { require: true, pattern: emailPattern } } 
+						stateKey="email" 
+						labelText="Product Description" 
+						inputType="email"
+						placeholder="Email"
+						onChange={this.changeEventHandler} />
 				</Form>
 			</div>
 		);
